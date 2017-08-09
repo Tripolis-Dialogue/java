@@ -2,9 +2,9 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.Spryng</groupId>
     <artifactId>SpryngSDKJava</artifactId>
-    <version>0.1</version>
+    <version>0.1-tripolis</version>
     <name>Spryng Java SDK</name>
-    <description>The official Spryng Java SDK, used to sent SMS messages globally.</description>
+    <description>The official Spryng Java SDK, used to sent SMS messages globally. Extended for integration with Dialogue.</description>
     <url>https://github.com/spryng/java</url>
     <organization>
         <name>Spryng B.V.</name>
