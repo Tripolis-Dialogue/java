@@ -1,5 +1,6 @@
 package com.Spryng.SpryngJavaSDK;
 
+import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.message.BasicNameValuePair;
 
@@ -26,7 +27,7 @@ public class SMS implements Constants, APIResponses
     public SMS(Spryng api)
     {
         this.api = api;
-        this.http = new RequestHandler();
+        this.http = new RequestHandler(api, API_SEND_URI);
     }
 
     /**
@@ -43,7 +44,7 @@ public class SMS implements Constants, APIResponses
             throw new SpryngException("The message you provided is invalid. Please refer to the API documentation");
         }
 
-        List<BasicNameValuePair> queryParameters = new ArrayList<BasicNameValuePair>();
+        List<NameValuePair> queryParameters = new ArrayList<NameValuePair>();
 
         // Add auth information to query string
         String secretPasswordKey = (this.api.isSecretIsAPIKey()) ? "secret" : "password";
@@ -69,23 +70,15 @@ public class SMS implements Constants, APIResponses
             queryParameters.add(new BasicNameValuePair("allowlong", "0"));
         }
 
+        if (message.isRawEncoding()) {
+        		queryParameters.add(new BasicNameValuePair("rawencoding", "1"));
+        }
+        
         if (message.getReference() != null)
         {
             queryParameters.add(new BasicNameValuePair("reference", message.getReference()));
         }
 
-        URI uri;
-        try
-        {
-            uri = new URI(HTTP_SCHEME, null, API_HOST, -1,  API_PATH + API_SEND_URI,
-                    URLEncodedUtils.format(queryParameters, URL_ENCODING), null);
-        }
-        catch (URISyntaxException ex)
-        {
-            throw new SpryngException("Error occurred while trying to initiate URI for SMS request.");
-        }
-
-        this.http.setUri(uri);
         this.http.setQueryParameters(queryParameters);
 
         String response = this.http.send();

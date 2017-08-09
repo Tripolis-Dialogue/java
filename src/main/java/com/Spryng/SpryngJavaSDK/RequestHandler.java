@@ -2,9 +2,11 @@ package com.Spryng.SpryngJavaSDK;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.NameValuePair;
 import org.apache.http.ParseException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
@@ -13,6 +15,8 @@ import org.w3c.dom.Entity;
 
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,44 +24,49 @@ public class RequestHandler implements Constants
 {
     protected CloseableHttpClient http;
 
-    protected List<BasicNameValuePair> queryParameters;
+    protected List<NameValuePair> queryParameters;
 
     protected URI uri;
+    
+    protected String endpoint;
+    
 
-    protected int httpResponseCode;
-
-    public RequestHandler()
+    public RequestHandler(Spryng api, String endpoint)
     {
         this.http = HttpClients.createDefault();
+        this.uri = api.getBasePath().resolve(endpoint);
     }
 
     public String send() throws SpryngException
     {
-        HttpGet get = new HttpGet(this.getUri());
-
-        CloseableHttpResponse httpResponse;
-        String response;
-
-        try
-        {
-            httpResponse = this.http.execute(get);
-
-            this.setHttpResponseCode(httpResponse.getStatusLine().getStatusCode());
-            if (this.getHttpResponseCode() == HttpStatus.SC_OK)
-            {
-                response = this.httpResponseToString(httpResponse);
-            }
-            else
-            {
-                throw new SpryngException("Got non-OK HTTP status for request. Code: " + this.getHttpResponseCode());
-            }
-        }
-        catch (IOException ioEx)
-        {
-            throw new SpryngException("HTTP Request failed. Message: " + ioEx.getMessage());
-        }
-
-        return response;
+    	 	
+		try {
+			
+			URIBuilder builder = new URIBuilder(this.getUri());
+			builder.setCharset(Charset.forName(URL_ENCODING));
+	    	 	builder.addParameters(this.queryParameters);
+	        HttpGet get = new HttpGet(builder.build());
+			
+	        CloseableHttpResponse  httpResponse = this.http.execute(get);
+	        try {
+	        		int httpResponseCode = httpResponse.getStatusLine().getStatusCode();
+				if (httpResponseCode == HttpStatus.SC_OK)
+				{
+				    return this.httpResponseToString(httpResponse);
+				}
+				else
+				{
+				    throw new SpryngException("Got non-OK HTTP status for request. Code: " + httpResponseCode);
+				}	
+			} finally {
+				httpResponse.close();
+			}
+	        
+		} catch (IOException e) {
+			throw new SpryngException("HTTP Request failed. Message: " + e.getMessage());
+		} catch (URISyntaxException e) {
+			throw new SpryngException("Error occurred while trying to initiate URI for request. Message: " + e.getMessage());
+		}
     }
 
     public String httpResponseToString(HttpResponse httpResponse) throws SpryngException
@@ -69,12 +78,12 @@ public class RequestHandler implements Constants
             {
                 response = EntityUtils.toString(httpResponse.getEntity(), URL_ENCODING);
             }
-            catch (ParseException pEx)
+            catch (ParseException e)
             {
                 throw new SpryngException("Could not properly parse HTTP response to a string. Additional Message: "
-                    + pEx.getMessage());
+                    + e.getMessage());
             }
-            catch (IOException ioEx)
+            catch (IOException e)
             {
                 throw new SpryngException("Could not parse the HTTP response to a string.");
             }
@@ -83,12 +92,12 @@ public class RequestHandler implements Constants
         return response;
     }
 
-    public List<BasicNameValuePair> getQueryParameters()
+    public List<NameValuePair> getQueryParameters()
     {
         return queryParameters;
     }
 
-    public void setQueryParameters(List<BasicNameValuePair> queryParameters)
+    public void setQueryParameters(List<NameValuePair> queryParameters)
     {
         this.queryParameters = queryParameters;
     }
@@ -103,13 +112,4 @@ public class RequestHandler implements Constants
         this.uri = uri;
     }
 
-    private void setHttpResponseCode(int httpResponseCode)
-    {
-        this.httpResponseCode = httpResponseCode;
-    }
-
-    public int getHttpResponseCode()
-    {
-        return httpResponseCode;
-    }
 }
