@@ -1,5 +1,6 @@
 package com.Spryng.SpryngJavaSDK;
 
+import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.message.BasicNameValuePair;
 
@@ -17,30 +18,17 @@ public class Credits implements Constants, APIResponses
     public Credits(Spryng api)
     {
         this.api = api;
-        this.http = new RequestHandler();
+        this.http = new RequestHandler(api, API_BALANCE_URI);
     }
 
     public float check() throws SpryngException
     {
-        List<BasicNameValuePair> queryParameters = new ArrayList<BasicNameValuePair>();
+        List<NameValuePair> queryParameters = new ArrayList<NameValuePair>();
         // Add auth information to query string
         String secretPasswordKey = (this.api.isSecretIsAPIKey()) ? "secret" : "password";
         queryParameters.add(new BasicNameValuePair("username", this.api.getUsername()));
         queryParameters.add(new BasicNameValuePair(secretPasswordKey, this.api.getSecret()));
         queryParameters.add(new BasicNameValuePair("sender", this.api.getSender()));
-
-        URI uri;
-        try
-        {
-            uri = new URI(HTTP_SCHEME, null, API_HOST, -1, API_PATH + API_BALANCE_URI,
-                    URLEncodedUtils.format(queryParameters, URL_ENCODING), null);
-        }
-        catch (URISyntaxException ex)
-        {
-            throw new SpryngException("Error occurred while trying to initiate URI for credit balance request.");
-        }
-
-        this.http.setUri(uri);
         this.http.setQueryParameters(queryParameters);
 
         return (float) Float.valueOf(this.http.send());

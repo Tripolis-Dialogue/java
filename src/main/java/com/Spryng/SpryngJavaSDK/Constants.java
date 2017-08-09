@@ -33,12 +33,12 @@ public interface Constants
     /**
      * The URI used to send SMS messages.
      */
-    String API_SEND_URI = URL_PATH_SEPARATOR + "send.php";
+    String API_SEND_URI = "send.php";
 
     /**
      * The URI used to check the credit balance.
      */
-    String API_BALANCE_URI = URL_PATH_SEPARATOR + "check.php";
+    String API_BALANCE_URI = "check.php";
 
     /**
      * User agent with client information.

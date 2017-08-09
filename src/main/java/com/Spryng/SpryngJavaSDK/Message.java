@@ -39,6 +39,11 @@ public class Message implements Constants
      * The Reference parameter, used to identify a message when receiving a delivery report.
      */
     protected String reference;
+    
+    /**
+     * Enable rawEncoding to send UTF-8 strings directly to API without converting first.
+     */
+    protected boolean rawEncoding = false;
 
     /**
      * Instantiates a new Message.
@@ -47,17 +52,34 @@ public class Message implements Constants
      * @param body        the body
      * @param service     the service
      * @param route       the route
-     * @param allowLong   the allow long
+     * @param allowLong   to allow long
+     * @param rawEncoding to enable raw encoding
      * @param reference   the reference
      */
-    public Message(String destination, String body, String service, String route, boolean allowLong, String reference)
+    public Message(String destination, String body, String service, String route, boolean allowLong, boolean rawEncoding, String reference)
     {
         this.destination = destination;
         this.body = body;
         this.service = service;
         this.route = route;
         this.allowLong = allowLong;
+        this.rawEncoding = rawEncoding;
         this.reference = reference;
+    }
+    
+    /**
+     * Instantiates a new Message.
+     * 
+     * @param the destination
+     * @param the body
+     * @param the service
+     * @param the route
+     * @param to allowLong
+     * @param the reference
+     */
+    public Message(String destination, String body, String service, String route, boolean allowLong, String reference)
+    {
+       this(destination, body, service, route, allowLong, false, reference);
     }
 
     /**
@@ -231,4 +253,23 @@ public class Message implements Constants
     {
         this.reference = reference;
     }
+
+    /**
+     * Gets rawEncoding setting
+     * 
+     * @return
+     */
+	public boolean isRawEncoding() {
+		return rawEncoding;
+	}
+
+	/**
+	 * Sets if rawEncoding should be used
+	 * 
+	 * @param rawEncoding
+	 */
+	public void setRawEncoding(boolean rawEncoding) {
+		this.rawEncoding = rawEncoding;
+	}
+    
 }
