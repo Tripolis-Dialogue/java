@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.Spryng</groupId>
-    <artifactId>SpryngSDKJava</artifactId>
+    <groupId>com.spryng</groupId>
+    <artifactId>http-api-client</artifactId>
     <version>0.1-tripolis</version>
     <name>Spryng Java SDK</name>
     <description>The official Spryng Java SDK, used to sent SMS messages globally. Extended for integration with Dialogue.</description>
