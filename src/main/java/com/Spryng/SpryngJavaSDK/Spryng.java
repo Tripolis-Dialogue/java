@@ -94,11 +94,18 @@ public class Spryng implements Constants
     }
 
     public void setSender(String sender) throws SpryngException
-    {
-        if (sender.length() > SENDER_MAX_LENGTH)
-        {
-            throw new SpryngException("The Sender ID you provided is too long. The maximum length is: " + SENDER_MAX_LENGTH);
-        }
+    {   	
+    		if (sender == null)
+    			throw new SpryngException("The Sender ID is required");
+    
+    		if (sender.matches("^[0-9]+$"))
+    			{
+    				if (sender.length() > SENDER_NUMERIC_MAX_LENGTH) 
+    					throw new SpryngException("The numeric Sender ID you provided is too long. The maximum length is: " + SENDER_NUMERIC_MAX_LENGTH);
+    			}
+        		else if (sender.length() > SENDER_ALPHANUMERIC_MAX_LENGTH)
+                throw new SpryngException("The alphanumeric Sender ID you provided is too long. The maximum length is: " + SENDER_ALPHANUMERIC_MAX_LENGTH);
+            
         this.sender = sender;
     }
 

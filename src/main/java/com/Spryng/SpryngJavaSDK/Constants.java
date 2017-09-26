@@ -66,7 +66,12 @@ public interface Constants
     public final int REFERENCE_MAX_LENGTH = 256;
 
     /**
-     * The maximum length of the `sender` parameter.
+     * The maximum length of the `sender` parameter with alphanumeric values.
      */
-    public final int SENDER_MAX_LENGTH = 11;
+    public final int SENDER_ALPHANUMERIC_MAX_LENGTH = 11;
+    
+    /**
+     * The maximum length of the `sender` parameter with only numeric values.
+     */
+    public final int SENDER_NUMERIC_MAX_LENGTH = 14;
 }
